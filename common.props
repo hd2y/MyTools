@@ -1,0 +1,6 @@
+<Project>
+    <PropertyGroup>
+        <RootNamespace>MyTools</RootNamespace>
+        <LangVersion>latest</LangVersion>
+    </PropertyGroup>
+</Project>
