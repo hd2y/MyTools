@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Text.RegularExpressions;
 using MyTools.Utils;
 
 namespace MyTools.Extensions
@@ -65,6 +66,40 @@ namespace MyTools.Extensions
             StringComparison comparisonType = StringComparison.CurrentCulture)
         {
             return new Substr(text).Between(a, b, comparisonType);
+        }
+
+        /// <summary>
+        /// 获取正则 exp 匹配之前的文本
+        /// </summary>
+        /// <param name="text"></param>
+        /// <param name="exp"></param>
+        /// <returns></returns>
+        public static Substr Before(this string text, Regex exp)
+        {
+            return new Substr(text).Before(exp);
+        }
+
+        /// <summary>
+        /// 获取正则 exp 匹配之后的文本
+        /// </summary>
+        /// <param name="text"></param>
+        /// <param name="exp"></param>
+        /// <returns></returns>
+        public static Substr After(this string text, Regex exp)
+        {
+            return new Substr(text).After(exp);
+        }
+
+        /// <summary>
+        /// 获取正则 exp1 与 exp2 之间内容
+        /// </summary>
+        /// <param name="text"></param>
+        /// <param name="exp1"></param>
+        /// <param name="exp2"></param>
+        /// <returns></returns>
+        public static Substr Between(this string text, Regex exp1, Regex exp2)
+        {
+            return new Substr(text).Between(exp1, exp2);
         }
     }
 }

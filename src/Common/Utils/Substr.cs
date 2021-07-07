@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Text.RegularExpressions;
 
 namespace MyTools.Utils
 {
@@ -46,19 +47,30 @@ namespace MyTools.Utils
         /// <returns></returns>
         public Substr Before(string value, StringComparison comparisonType = StringComparison.CurrentCulture)
         {
-            if (Length != 0 && !string.IsNullOrEmpty(value))
+            if (Length == 0 || string.IsNullOrEmpty(value)) return this;
+            var index = Text.IndexOf(value, Index, comparisonType);
+            if (index == -1 || index >= Index + Length)
             {
-                var index = Text.IndexOf(value, Index, comparisonType);
-                if (index == -1 || index >= Index + Length)
-                {
-                    Length = 0;
-                }
-                else
-                {
-                    Length = index - Index;
-                }
+                Length = 0;
+            }
+            else
+            {
+                Length = index - Index;
             }
 
+            return this;
+        }
+
+        /// <summary>
+        /// 获取正则 exp1 与 exp2 之间内容
+        /// </summary>
+        /// <param name="exp1"></param>
+        /// <param name="exp2"></param>
+        /// <returns></returns>
+        public Substr Between(Regex exp1, Regex exp2)
+        {
+            After(exp1);
+            Before(exp2);
             return this;
         }
 
@@ -79,6 +91,27 @@ namespace MyTools.Utils
         }
 
         /// <summary>
+        /// 获取正则 exp 匹配之前的文本
+        /// </summary>
+        /// <param name="exp"></param>
+        /// <returns></returns>
+        public Substr Before(Regex exp)
+        {
+            if (exp == null || Length == 0) return this;
+            var match = exp.Match(Text, Index);
+            if (!match.Success || match.Index >= Index + Length)
+            {
+                Length = 0;
+            }
+            else
+            {
+                Length = match.Index - Index;
+            }
+
+            return this;
+        }
+
+        /// <summary>
         /// 获取 value 之后的文本
         /// </summary>
         /// <param name="value"></param>
@@ -86,18 +119,16 @@ namespace MyTools.Utils
         /// <returns></returns>
         public Substr After(string value, StringComparison comparisonType = StringComparison.CurrentCulture)
         {
-            if (Length != 0 && !string.IsNullOrEmpty(value))
+            if (Length == 0 || string.IsNullOrEmpty(value)) return this;
+            var index = Text.IndexOf(value, Index, comparisonType);
+            if (index == -1 || index + value.Length >= Index + Length)
             {
-                var index = Text.IndexOf(value, Index, comparisonType);
-                if (index == -1 || index + value.Length >= Index + Length)
-                {
-                    Length = 0;
-                }
-                else
-                {
-                    Length -= index + value.Length - Index;
-                    Index = index + value.Length;
-                }
+                Length = 0;
+            }
+            else
+            {
+                Length -= index + value.Length - Index;
+                Index = index + value.Length;
             }
 
             return this;
@@ -114,6 +145,28 @@ namespace MyTools.Utils
             foreach (var value in values)
             {
                 After(value);
+            }
+
+            return this;
+        }
+
+        /// <summary>
+        /// 获取正则 exp 匹配之后的文本
+        /// </summary>
+        /// <param name="exp"></param>
+        /// <returns></returns>
+        public Substr After(Regex exp)
+        {
+            if (exp == null || Length == 0) return this;
+            var match = exp.Match(Text, Index);
+            if (!match.Success || match.Index + match.Value.Length >= Index + Length)
+            {
+                Length = 0;
+            }
+            else
+            {
+                Length -= match.Index + match.Value.Length - Index;
+                Index = match.Index + match.Value.Length;
             }
 
             return this;
