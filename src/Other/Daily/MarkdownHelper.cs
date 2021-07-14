@@ -68,7 +68,7 @@ namespace MyTools.Daily
                     responseMessage.EnsureSuccessStatusCode();
 
                     using var memoryStream = new MemoryStream();
-                    responseMessage.Content.CopyToAsync(memoryStream);
+                    await responseMessage.Content.CopyToAsync(memoryStream);
                     
                     // 获取图片名
                     var imgName = GetImageName(imgUrl, memoryStream, $"{postName}-{j + 1:00}");
